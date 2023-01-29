@@ -23,12 +23,12 @@ public class CheckWriteAuthorityInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
         Object handler) {
 
-        if (request.getMethod().equals(HttpMethod.GET.name())) {
-            return true;
-        }
-
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (authHeader == null) {
+            // 외부 사용자가 GET 으로 요청을 보낸다면
+            if (request.getMethod().equals(HttpMethod.GET.name())) {
+                return true;
+            }
             throw new NoAuthorizedException();
         }
 
@@ -38,6 +38,8 @@ public class CheckWriteAuthorityInterceptor implements HandlerInterceptor {
         Member member = memberRepository.findByAccountId(accountId)
             .orElseThrow(NoAuthorizedException::new);
 
-        return member != null;
+        request.setAttribute("member", member);
+
+        return true;
     }
 }

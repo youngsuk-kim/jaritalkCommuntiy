@@ -12,7 +12,7 @@ public class AuthHeaderParser {
     public static Optional<AccountId> execute(final String authHeader) {
         AccountId accountId = null;
         for (AccountType value : AccountType.values()) {
-            boolean matches = Pattern.matches("^" + value.name() + ".*", authHeader);
+            final boolean matches = Pattern.matches("^" + value.name() + ".*", authHeader);
             if (matches) {
                 accountId = new AccountId(authHeader.replaceAll("^" + value.name() + "( )*", ""));
                 break;
